@@ -29,19 +29,8 @@ def multiclass_logloss(actual, predicted, eps=1e-15):
     rows = actual.shape[0]
     vsota = np.sum(actual * np.log(clip))
     return -1.0 / rows * vsota
-#%%
-dfTrain = pd.read_csv("D:/backups/bi_laptop/Personal/Data science program/kaggle/spooky_authors/train.csv")
-
-dfTrain.groupby('author')['author'].count()
-
-lbl_enc = preprocessing.LabelEncoder()
-
-y = lbl_enc.fit_transform(dfTrain.author.values)
-
 
 def preprocessText(df):
-    
-    
     dfNew = pd.DataFrame(columns=['newText','wordCount','sentenceLength','avgWordLength','punctuationCount'])
     signs = set(',.:;"?!')
     
@@ -74,6 +63,16 @@ def preprocessText(df):
     
 
 
+
+#%%
+dfTrain = pd.read_csv("D:/data_science/kaggle/spooky_authors/train.csv")
+
+dfTrain.groupby('author')['author'].count()
+
+lbl_enc = preprocessing.LabelEncoder()
+
+y = lbl_enc.fit_transform(dfTrain.author.values)
+
 #%%
 
 xtrain, xvalid, ytrain, yvalid = train_test_split(dfTrain.text.values,y,stratify=y,random_state=19,test_size=0.3)
@@ -89,8 +88,6 @@ tfidf_vec.fit(list(xtrain.newText) + list(xvalid.newText))
 
 xtrain_tfv = tfidf_vec.transform(xtrain.newText)
 xvalid_tfv = tfidf_vec.transform(xvalid.newText)
-
-
 
 xtrain_tfv = pd.DataFrame(xtrain_tfv.toarray(),columns = tfidf_vec.get_feature_names())
 xvalid_tfv = pd.DataFrame(xvalid_tfv.toarray(),columns = tfidf_vec.get_feature_names())
@@ -219,9 +216,9 @@ print (confusion_matrix(yvalid,pred_class))
 
 #%%
 #Prepare and run on test dataset
-dfTest = pd.read_csv("\\\\eu.boehringer.com\\users\\stj\\Users1\\swaldrof\\Documents\\Personal\\Data science program\\kaggle\\spooky_authors\\test.csv")
+dfTest = pd.read_csv("D:\\data_science\\kaggle\\spooky_authors\\test.csv")
 
-dfSubmission = pd.read_csv("\\\\eu.boehringer.com\\users\\stj\\Users1\\swaldrof\\Documents\\Personal\\Data science program\\kaggle\\spooky_authors\\sample_submission.csv")
+dfSubmission = pd.read_csv("D:\\data_science\\kaggle\\spooky_authors\\submissions\\sample_submission.csv")
 
 xtest = preprocessText(dfTest)
 xtest_tfv = tfidf_vec.transform(xtest.newText)
@@ -237,7 +234,7 @@ dfSubmission['HPL'] = sub_predictions['HPL']
 dfSubmission['MWS'] = sub_predictions['MWS']
 
 
-dfSubmission.to_csv("\\\\eu.boehringer.com\\users\\stj\\Users1\\swaldrof\\Documents\\Personal\\Data science program\\kaggle\\spooky_authors\\sub_test5.csv",index=False)
+dfSubmission.to_csv("D:\\data_science\\kaggle\\spooky_authors\\submissions\\sub_test5.csv",index=False)
 
 
 #%%
